@@ -1,0 +1,55 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.swp
+server_*
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+bin/
+
+.idea/
+*.iml
+.vscode/settings.json
+
+tmp/
+tmpFiles/
+*.tmp
+logs/
+files/
+lastupdate.tmp
+commentsRouter*.go
+
+# ignore build result
+casdoor
+server
+
+# include helm-chart
+!manifests/casdoor
+
+# ========= 新增：前端与环境变量等必须忽略的配置 =========
+# Node.js 依赖 (前端打包依赖，绝不能提交)
+node_modules/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 环境变量文件 (防止数据库密码泄露！)
+.env
+.env.local
+*.env
+conf/app.conf  # 如果你里面写了真实的数据库密码，建议忽略，并在同目录提供一个 app.conf.example
+
+# 系统生成的缓存
+.DS_Store
+Thumbs.db
