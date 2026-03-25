@@ -43,45 +43,44 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
-  margin-bottom: 24px;
-  margin-top: 0;
+  margin: 0 auto 24px;
   object-fit: contain;
-  
+
   /* 响应式设计 */
   @media screen and (max-width: 768px) {
     max-width: 160px;
     margin-bottom: 16px;
   }
-  
+
   @media screen and (min-width: 769px) and (max-width: 1024px) {
     max-width: 180px;
     margin-bottom: 20px;
   }
-  
+
   @media screen and (min-width: 1025px) {
     max-width: 200px;
     margin-bottom: 24px;
   }
-  
+
   /* 保持纵横比 */
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 2px 8px rgb(59 130 246 / 12%);
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 12px rgb(59 130 246 / 20%);
   }
 }
 
 .login-logo-box {
   text-align: center;
   margin-bottom: 32px;
-  
+
   @media screen and (max-width: 768px) {
     margin-bottom: 20px;
   }
-  
+
   img {
     max-width: 100%;
     height: auto;
@@ -159,9 +158,9 @@ img {
   background-color: rgb(255 255 255);
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 4px 12px rgb(59 130 246 / 15%);
   max-width: 500px;
-  
+
   @media screen and (max-width: 768px) {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -172,7 +171,7 @@ img {
   text-align: center;
   padding: 40px 32px;
   width: 100%;
-  
+
   @media screen and (max-width: 768px) {
     padding: 30px 24px;
   }
@@ -187,11 +186,11 @@ img {
   margin: 0 auto;
   position: relative;
   width: 100%;
-  
+
   @media screen and (max-width: 768px) {
     padding: 0 16px;
   }
-  
+
   @media screen and (min-width: 769px) {
     padding: 0 32px;
   }
@@ -232,10 +231,10 @@ img {
 /* 卡片样式 - 遵循规范 8px 圆角 + 阴影 */
 .ant-card {
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-  
+  box-shadow: 0 1px 2px rgb(0 0 0 / 5%) !important;
+
   &:hover {
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1) !important;
+    box-shadow: 0 4px 6px rgb(59 130 246 / 10%) !important;
   }
 }
 
@@ -246,15 +245,15 @@ img {
 .ant-picker {
   border-radius: 8px !important;
   transition: all 0.2s ease-in-out !important;
-  
+
   &:hover {
     border-color: #3b82f6 !important;
   }
-  
+
   &:focus,
   &.ant-input-focused {
     border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    box-shadow: 0 0 0 3px rgb(59 130 246 / 10%) !important;
   }
 }
 
@@ -263,17 +262,17 @@ img {
   border-radius: 8px !important;
   font-weight: 500;
   transition: all 0.2s ease-in-out !important;
-  
+
   &-primary {
     background-color: #3b82f6 !important;
     border-color: #3b82f6 !important;
-    
+
     &:hover {
       background-color: #2563eb !important;
       border-color: #2563eb !important;
     }
   }
-  
+
   &-default {
     &:hover {
       color: #3b82f6 !important;
@@ -285,48 +284,49 @@ img {
 /* 表格 - 遵循规范 */
 .ant-table {
   font-size: 14px;
-  
+
+  td,
+  th {
+    padding: 16px !important;
+    border-bottom-color: #f3f4f6 !important;
+  }
+
   .ant-table-thead > tr > th {
     background-color: #f9fafb !important;
     font-weight: 600;
     text-transform: none;
     border-bottom-color: #e5e7eb !important;
   }
-  
+
   .ant-table-tbody > tr {
     &:hover > td {
       background-color: #f9fafb !important;
     }
-  }
-  
-  td, th {
-    padding: 16px !important;
-    border-bottom-color: #f3f4f6 !important;
   }
 }
 
 /* 标签和徽章 - 遵循规范颜色 */
 .ant-tag {
   border-radius: 4px;
-  
+
   &-blue {
     background-color: #dbeafe;
     color: #1e40af;
     border-color: #bfdbfe;
   }
-  
+
   &-green {
     background-color: #d1fae5;
     color: #065f46;
     border-color: #a7f3d0;
   }
-  
+
   &-orange {
     background-color: #fef3c7;
     color: #92400e;
     border-color: #fcd34d;
   }
-  
+
   &-red {
     background-color: #fee2e2;
     color: #991b1b;
@@ -340,12 +340,12 @@ img {
     border-radius: 8px;
     margin-bottom: 4px;
     transition: all 0.2s ease-in-out;
-    
+
     &:hover {
       color: #3b82f6 !important;
-      background-color: rgba(59, 130, 246, 0.05) !important;
+      background-color: rgb(59 130 246 / 5%) !important;
     }
-    
+
     &.ant-menu-item-selected {
       background-color: #eff6ff !important;
       color: #3b82f6 !important;
@@ -358,7 +358,7 @@ img {
   .ant-modal-content {
     border-radius: 8px;
   }
-  
+
   .ant-modal-header {
     border-radius: 8px 8px 0 0;
     border-bottom-color: #e5e7eb;
@@ -369,12 +369,12 @@ img {
 .ant-pagination {
   .ant-pagination-item {
     border-radius: 4px;
-    
+
     &:hover {
       color: #3b82f6 !important;
       border-color: #3b82f6 !important;
     }
-    
+
     &.ant-pagination-item-active {
       background-color: #3b82f6 !important;
       border-color: #3b82f6 !important;

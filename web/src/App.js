@@ -505,16 +505,16 @@ class App extends Component {
       <Drawer
         title={
           <React.Fragment>
-            <Tooltip title="Want to deploy your own AI assistant? Click to learn more!">
-              <a target="_blank" rel="noreferrer" href={"https://casdoor.com"}>
-                <img style={{width: "20px", marginRight: "10px", marginBottom: "2px"}} alt="help" src="https://casbin.org/img/casbin.svg" />
+            <Tooltip title="Open AI Assistant">
+              <a target="_blank" rel="noreferrer" href={`${Conf.AiAssistantUrl}`}>
+                <img style={{width: "20px", marginRight: "10px", marginBottom: "2px"}} alt="help" src="/favicon.png" />
                 AI Assistant
               </a>
             </Tooltip>
             <a className="custom-link" style={{float: "right", marginTop: "2px"}} target="_blank" rel="noreferrer" href={`${Conf.AiAssistantUrl}`}>
               <ShareAltOutlined className="custom-link" style={{fontSize: "20px", color: "rgb(140,140,140)"}} />
             </a>
-            <a className="custom-link" style={{float: "right", marginRight: "30px", marginTop: "2px"}} target="_blank" rel="noreferrer" href={"https://github.com/casibase/casibase"}>
+            <a className="custom-link" style={{float: "right", marginRight: "30px", marginTop: "2px"}} target="_blank" rel="noreferrer" href={"/"}>
               <GithubOutlined className="custom-link" style={{fontSize: "20px", color: "rgb(140,140,140)"}} />
             </a>
           </React.Fragment>
@@ -712,7 +712,7 @@ class App extends Component {
           &nbsp;&nbsp;
           {i18next.t("general:Found some texts still not translated? Please help us translate at")}
           &nbsp;
-          <a target="_blank" rel="noreferrer" href={"https://crowdin.com/project/casdoor-site"}>
+          <a target="_blank" rel="noreferrer" href={"https://crowdin.com"}>
             Crowdin
           </a>
           &nbsp;!&nbsp;🙏
@@ -726,7 +726,7 @@ class App extends Component {
       <React.Fragment>
         {(this.state.account === undefined || this.state.account === null) ?
           <Helmet>
-            <link rel="icon" href={"/logo_cheersai.svg"} />
+            <link rel="icon" href={"/favicon.png"} />
             <title>CheersAI-SSO</title>
           </Helmet> :
           <Helmet>

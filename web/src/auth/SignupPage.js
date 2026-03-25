@@ -562,33 +562,9 @@ class SignupPage extends React.Component {
               name="email"
               className="signup-email"
               label={signupItem.label ? signupItem.label : i18next.t("general:Email")}
-              rules={[
-                {
-                  required: required,
-                  message: i18next.t("login:Please input your Email!"),
-                },
-                {
-                  validator: (_, value) => {
-                    if (this.state.email !== "" && !Setting.isValidEmail(this.state.email)) {
-                      this.setState({validEmail: false});
-                      return Promise.reject(i18next.t("login:The input is not valid Email!"));
-                    }
-
-                    if (signupItem.regex) {
-                      const reg = new RegExp(signupItem.regex);
-                      if (!reg.test(this.state.email)) {
-                        this.setState({validEmail: false});
-                        return Promise.reject(i18next.t("signup:The input Email doesn't match the signup item regex!"));
-                      }
-                    }
-
-                    this.setState({validEmail: true});
-                    return Promise.resolve();
-                  },
-                },
-              ]}
+              rules={[]}
             >
-              <Input className="signup-email-input" placeholder={signupItem.placeholder} disabled={this.state.invitation !== undefined && this.state.invitation.email !== ""} onChange={e => this.setState({email: e.target.value})} />
+              <Input className="signup-email-input" placeholder={signupItem.placeholder} disabled={this.state.invitation !== undefined && this.state.invitation.email !== ""} onChange={e => this.setState({email: e.target.value, validEmail: e.target.value !== ""})} />
             </Form.Item>
             {
               signupItem.rule !== "No verification" &&
@@ -596,10 +572,7 @@ class SignupPage extends React.Component {
                 name="emailCode"
                 className="signup-email-code"
                 label={signupItem.label ? signupItem.label : i18next.t("code:Email code")}
-                rules={[{
-                  required: required,
-                  message: i18next.t("code:Please input your verification code!"),
-                }]}
+                rules={[]}
               >
                 <SendCodeInput
                   className="signup-email-code-input"
@@ -617,17 +590,12 @@ class SignupPage extends React.Component {
       const renderPhoneItem = () => {
         return (
           <React.Fragment>
-            <Form.Item className="signup-phone" label={signupItem.label ? signupItem.label : i18next.t("general:Phone")} required={required}>
+            <Form.Item className="signup-phone" label={signupItem.label ? signupItem.label : i18next.t("general:Phone")} required={false}>
               <Input.Group compact>
                 <Form.Item
                   name="countryCode"
                   noStyle
-                  rules={[
-                    {
-                      required: required,
-                      message: i18next.t("signup:Please select your country code!"),
-                    },
-                  ]}
+                  rules={[]}
                 >
                   <CountryCodeSelect
                     style={{width: "35%"}}
@@ -638,34 +606,14 @@ class SignupPage extends React.Component {
                   name="phone"
                   dependencies={["countryCode"]}
                   noStyle
-                  rules={[
-                    {
-                      required: required,
-                      message: i18next.t("signup:Please input your phone number!"),
-                    },
-                    ({getFieldValue}) => ({
-                      validator: (_, value) => {
-                        if (!required && !value) {
-                          return Promise.resolve();
-                        }
-
-                        if (value && !Setting.isValidPhone(value, getFieldValue("countryCode"))) {
-                          this.setState({validPhone: false});
-                          return Promise.reject(i18next.t("signup:The input is not valid Phone!"));
-                        }
-
-                        this.setState({validPhone: true});
-                        return Promise.resolve();
-                      },
-                    }),
-                  ]}
+                  rules={[]}
                 >
                   <Input
                     className="signup-phone-input"
                     placeholder={signupItem.placeholder}
                     style={{width: "65%"}}
                     disabled={this.state.invitation !== undefined && this.state.invitation.phone !== ""}
-                    onChange={e => this.setState({phone: e.target.value})}
+                    onChange={e => this.setState({phone: e.target.value, validPhone: e.target.value !== ""})}
                   />
                 </Form.Item>
               </Input.Group>
@@ -676,12 +624,7 @@ class SignupPage extends React.Component {
                 name="phoneCode"
                 className="phone-code"
                 label={signupItem.label ? signupItem.label : i18next.t("code:Phone code")}
-                rules={[
-                  {
-                    required: required,
-                    message: i18next.t("code:Please input your phone verification code!"),
-                  },
-                ]}
+                rules={[]}
               >
                 <SendCodeInput
                   className="signup-phone-code-input"

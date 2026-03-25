@@ -45,7 +45,7 @@ class SiteListPage extends BaseListPage {
       name: `site_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Site - ${randomName}`,
-      domain: "door.casdoor.com",
+      domain: "localhost",
       otherDomains: [],
       needRedirect: false,
       disableVerbose: false,

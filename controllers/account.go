@@ -141,33 +141,37 @@ func (c *ApiController) Signup() {
 	userEmailVerified := false
 
 	if application.IsSignupItemVisible("Email") && application.GetSignupItemRule("Email") != "No verification" && authForm.Email != "" {
-		var checkResult *object.VerifyResult
-		checkResult, err = object.CheckVerificationCode(authForm.Email, authForm.EmailCode, c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(c.T(err.Error()))
-			return
-		}
-		if checkResult.Code != object.VerificationSuccess {
-			c.ResponseError(checkResult.Msg)
-			return
-		}
+		if authForm.EmailCode != "" {
+			var checkResult *object.VerifyResult
+			checkResult, err = object.CheckVerificationCode(authForm.Email, authForm.EmailCode, c.GetAcceptLanguage())
+			if err != nil {
+				c.ResponseError(c.T(err.Error()))
+				return
+			}
+			if checkResult.Code != object.VerificationSuccess {
+				c.ResponseError(checkResult.Msg)
+				return
+			}
 
-		userEmailVerified = true
+			userEmailVerified = true
+		}
 	}
 
 	var checkPhone string
 	if application.IsSignupItemVisible("Phone") && application.GetSignupItemRule("Phone") != "No verification" && authForm.Phone != "" {
-		checkPhone, _ = util.GetE164Number(authForm.Phone, authForm.CountryCode)
+		if authForm.PhoneCode != "" {
+			checkPhone, _ = util.GetE164Number(authForm.Phone, authForm.CountryCode)
 
-		var checkResult *object.VerifyResult
-		checkResult, err = object.CheckVerificationCode(checkPhone, authForm.PhoneCode, c.GetAcceptLanguage())
-		if err != nil {
-			c.ResponseError(c.T(err.Error()))
-			return
-		}
-		if checkResult.Code != object.VerificationSuccess {
-			c.ResponseError(checkResult.Msg)
-			return
+			var checkResult *object.VerifyResult
+			checkResult, err = object.CheckVerificationCode(checkPhone, authForm.PhoneCode, c.GetAcceptLanguage())
+			if err != nil {
+				c.ResponseError(c.T(err.Error()))
+				return
+			}
+			if checkResult.Code != object.VerificationSuccess {
+				c.ResponseError(checkResult.Msg)
+				return
+			}
 		}
 	}
 

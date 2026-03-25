@@ -53,3 +53,4 @@ conf/app.conf  # 如果你里面写了真实的数据库密码，建议忽略，
 # 系统生成的缓存
 .DS_Store
 Thumbs.db
+.mysql_data/*

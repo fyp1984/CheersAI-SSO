@@ -39,16 +39,7 @@ export const SEARCH_DEBOUNCE_MS = 300;
 
 export const Countries = [
   {label: "English", key: "en", country: "US", alt: "English"},
-  {label: "Español", key: "es", country: "ES", alt: "Español"},
-  {label: "Français", key: "fr", country: "FR", alt: "Français"},
-  {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
-  {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
-  {label: "TiếngViệt", key: "vi", country: "VN", alt: "TiếngViệt"},
-  {label: "Português", key: "pt", country: "PT", alt: "Português"},
-  {label: "Türkçe", key: "tr", country: "TR", alt: "Türkçe"},
-  {label: "Polski", key: "pl", country: "PL", alt: "Polski"},
-  {label: "Українська", key: "uk", country: "UA", alt: "Українська"},
 ];
 
 export function getThemeData(organization, application) {
@@ -147,7 +138,7 @@ export const OtherProviderInfo = {
     },
     "Custom HTTP SMS": {
       logo: `${StaticBaseUrl}/img/social_default.png`,
-      url: "https://casdoor.org/docs/provider/sms/overview",
+      url: "",
     },
     "Mock SMS": {
       logo: `${StaticBaseUrl}/img/social_default.png`,
@@ -177,7 +168,7 @@ export const OtherProviderInfo = {
     },
     "Custom HTTP Email": {
       logo: `${StaticBaseUrl}/img/social_default.png`,
-      url: "https://casdoor.org/docs/provider/email/overview",
+      url: "",
     },
     "Resend": {
       logo: `${StaticBaseUrl}/img/email_resend.png`,
@@ -223,7 +214,7 @@ export const OtherProviderInfo = {
     },
     "Casdoor": {
       logo: `${StaticBaseUrl}/img/casdoor.png`,
-      url: "https://casdoor.org/docs/provider/storage/overview",
+      url: "",
     },
     "CUCloud OSS": {
       logo: `${StaticBaseUrl}/img/social_cucloud.png`,
@@ -241,7 +232,7 @@ export const OtherProviderInfo = {
     },
     "Custom": {
       logo: `${StaticBaseUrl}/img/social_custom.png`,
-      url: "https://door.casdoor.com/",
+      url: window.location.origin,
     },
   },
   Payment: {
@@ -355,7 +346,7 @@ export const OtherProviderInfo = {
     },
     "Custom HTTP": {
       logo: `${StaticBaseUrl}/img/email_default.png`,
-      url: "https://casdoor.org/docs/provider/notification/overview",
+      url: "",
     },
     "DingTalk": {
       logo: `${StaticBaseUrl}/img/social_dingtalk.png`,
@@ -1957,7 +1948,7 @@ export function getUserCommonFields() {
 }
 
 export function getDefaultFooterContent() {
-  return `Powered by <a target="_blank" href="https://casdoor.org" rel="noreferrer"><img style="padding-bottom: 3px" height="20" alt="Casdoor" src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png"/></a>`;
+  return "Powered by <span style=\"display: inline-flex; align-items: center; gap: 8px;\"><img style=\"padding-bottom: 3px\" height=\"20\" alt=\"CheersAI-SSO\" src=\"/logo.png\"/>CheersAI-SSO</span>";
 }
 
 export function getEmptyFooterContent() {
@@ -1988,8 +1979,8 @@ export function getDefaultHtmlEmailContent() {
 <body>
 <div class="email-container">
   <div class="header">
-        <h3>Casbin Organization</h3>
-        <img src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png" alt="Casdoor Logo" width="300">
+        <h3>CheersAI-SSO</h3>
+        <img src="/logo.png" alt="CheersAI-SSO Logo" width="300">
     </div>
     <p><strong>%{user.friendlyName}</strong>, here is your verification code</p>
     <p>Use this code for your transaction. It's valid for 5 minutes</p>
@@ -2002,10 +1993,10 @@ export function getDefaultHtmlEmailContent() {
       </div>
     </reset-link>
     <p>Thanks</p>
-    <p>Casbin Team</p>
+    <p>CheersAI Team</p>
     <hr>
     <div class="footer">
-        <p>Casdoor is a brand operated by Casbin organization. For more info please refer to <a href="https://casdoor.org">https://casdoor.org</a></p>
+        <p>CheersAI-SSO keeps your sign-in experience secure and streamlined.</p>
     </div>
 </div>
 </body>
@@ -2031,10 +2022,10 @@ export function getDefaultInvitationHtmlEmailContent() {
 <body>
 <div class="email-container">
   <div class="header">
-        <h3>Casbin Organization</h3>
-        <img src="${StaticBaseUrl}/img/casdoor-logo_1185x256.png" alt="Casdoor Logo" width="300">
+        <h3>CheersAI-SSO</h3>
+        <img src="/logo.png" alt="CheersAI-SSO Logo" width="300">
     </div>
-    <p>You have been invited into Casdoor</p>
+    <p>You have been invited into CheersAI-SSO</p>
     <div class="code">
         %code
     </div>
@@ -2044,10 +2035,10 @@ export function getDefaultInvitationHtmlEmailContent() {
       </div>
     </reset-link>
     <p>Thanks</p>
-    <p>Casbin Team</p>
+    <p>CheersAI Team</p>
     <hr>
     <div class="footer">
-        <p>Casdoor is a brand operated by Casbin organization. For more info please refer to <a href="https://casdoor.org">https://casdoor.org</a></p>
+        <p>CheersAI-SSO keeps your sign-in experience secure and streamlined.</p>
     </div>
 </div>
 </body>
@@ -2471,8 +2462,8 @@ function getOriginalName(name) {
 export function getRepoUrl(name) {
   name = getOriginalName(name);
   if (name === "casdoor") {
-    return "https://github.com/casdoor/casdoor";
+    return "/";
   } else {
-    return `https://github.com/casbin/${name}`;
+    return "/";
   }
 }

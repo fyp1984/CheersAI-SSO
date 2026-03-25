@@ -45,104 +45,38 @@ const resourcesToBackend = (res) => ({
   },
 });
 
+const supportedLanguages = new Set(["en", "zh"]);
+
+function normalizeLanguage(language) {
+  if (!language) {
+    return Conf.DefaultLanguage;
+  }
+
+  const lowerLanguage = language.toLowerCase();
+  if (lowerLanguage === "zh" || lowerLanguage.startsWith("zh-")) {
+    return "zh";
+  }
+
+  if (lowerLanguage === "en" || lowerLanguage.startsWith("en-")) {
+    return "en";
+  }
+
+  return Conf.DefaultLanguage;
+}
+
 function initLanguage() {
   let language = localStorage.getItem("language");
   if (language === undefined || language === null || language === "") {
     if (Conf.ForceLanguage !== "") {
-      language = Conf.ForceLanguage;
+      language = normalizeLanguage(Conf.ForceLanguage);
     } else {
-      const userLanguage = navigator.language;
-      switch (userLanguage) {
-      case "en":
-        language = "en";
-        break;
-      case "en-US":
-        language = "en";
-        break;
-      case "zh-CN":
-        language = "zh";
-        break;
-      case "zh":
-        language = "zh";
-        break;
-      case "es":
-        language = "es";
-        break;
-      case "fr":
-        language = "fr";
-        break;
-      case "de":
-        language = "de";
-        break;
-      case "id":
-        language = "id";
-        break;
-      case "ja":
-        language = "ja";
-        break;
-      case "ko":
-        language = "ko";
-        break;
-      case "ru":
-        language = "ru";
-        break;
-      case "vi":
-        language = "vi";
-        break;
-      case "pt":
-        language = "pt";
-        break;
-      case "it":
-        language = "it";
-        break;
-      case "ms":
-        language = "ms";
-        break;
-      case "tr":
-        language = "tr";
-        break;
-      case "ar":
-        language = "ar";
-        break;
-      case "he":
-        language = "he";
-        break;
-      case "nl":
-        language = "nl";
-        break;
-      case "pl":
-        language = "pl";
-        break;
-      case "fi":
-        language = "fi";
-        break;
-      case "sv":
-        language = "sv";
-        break;
-      case "uk":
-        language = "uk";
-        break;
-      case "kk":
-        language = "kk";
-        break;
-      case "fa":
-        language = "fa";
-        break;
-      case "cs":
-      case "cs-CZ":
-        language = "cs";
-        break;
-      case "sk":
-      case "sk-SK":
-        language = "sk";
-        break;
-      case "az":
-        language = "az";
-        break;
-      default:
-        language = Conf.DefaultLanguage;
-      }
+      language = normalizeLanguage(navigator.language);
     }
+  }
+
+  language = normalizeLanguage(language);
+  if (!supportedLanguages.has(language)) {
+    return Conf.DefaultLanguage;
   }
 
   return language;

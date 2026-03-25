@@ -78,34 +78,15 @@ func CheckUserSignup(application *Application, organization *Organization, authF
 		}
 	}
 
-	if application.IsSignupItemVisible("Email") {
-		if authForm.Email == "" {
-			if application.IsSignupItemRequired("Email") {
-				return i18n.Translate(lang, "check:Email cannot be empty")
-			}
-		} else {
-			normalizedEmail := strings.ToLower(authForm.Email)
-			if HasUserByField(organization.Name, "email", normalizedEmail) {
-				return i18n.Translate(lang, "check:Email already exists")
-			} else if !util.IsEmailValid(authForm.Email) {
-				return i18n.Translate(lang, "check:Email is invalid")
-			}
+	if application.IsSignupItemVisible("Email") && authForm.Email != "" {
+		if HasUserByField(organization.Name, "email", strings.ToLower(authForm.Email)) {
+			return i18n.Translate(lang, "check:Email already exists")
 		}
 	}
 
-	if application.IsSignupItemVisible("Phone") {
-		if authForm.Phone == "" {
-			if application.IsSignupItemRequired("Phone") {
-				return i18n.Translate(lang, "check:Phone cannot be empty")
-			}
-		} else {
-			if HasUserByField(organization.Name, "phone", authForm.Phone) {
-				return i18n.Translate(lang, "check:Phone already exists")
-			} else if !util.IsPhoneAllowInRegin(authForm.CountryCode, organization.CountryCodes) {
-				return i18n.Translate(lang, "check:Your region is not allow to signup by phone")
-			} else if !util.IsPhoneValid(authForm.Phone, authForm.CountryCode) {
-				return i18n.Translate(lang, "check:Phone number is invalid")
-			}
+	if application.IsSignupItemVisible("Phone") && authForm.Phone != "" {
+		if HasUserByField(organization.Name, "phone", authForm.Phone) {
+			return i18n.Translate(lang, "check:Phone already exists")
 		}
 	}
 
