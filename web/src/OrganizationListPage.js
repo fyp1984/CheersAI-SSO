@@ -51,7 +51,7 @@ class OrganizationListPage extends BaseListPage {
       enableTour: true,
       disableSignin: false,
       mfaRememberInHours: DefaultMfaRememberInHours,
-      balanceCurrency: "USD",
+      balanceCurrency: "CNY",
       accountItems: [
         {name: "Organization", visible: true, viewRule: "Public", modifyRule: "Admin"},
         {name: "ID", visible: true, viewRule: "Public", modifyRule: "Immutable"},

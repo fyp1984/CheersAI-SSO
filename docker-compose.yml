@@ -18,6 +18,7 @@ services:
     volumes:
       - ./conf:/conf/
       - ./web/build:/web/build
+      - ./files:/files
   db:
     restart: always
     image: mysql:8.0.25

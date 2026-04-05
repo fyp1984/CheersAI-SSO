@@ -142,7 +142,8 @@ function ManagementPage(props) {
   }
 
   function renderAvatar() {
-    if (props.account.avatar === "") {
+    const avatarUrl = Setting.normalizeUrl(props.account.avatar);
+    if (avatarUrl === "") {
       return (
         <Avatar style={{backgroundColor: Setting.getAvatarColor(props.account.name), verticalAlign: "middle"}} size="large">
           {Setting.getShortName(props.account.name)}
@@ -150,8 +151,8 @@ function ManagementPage(props) {
       );
     } else {
       return (
-        <Avatar src={props.account.avatar} style={{verticalAlign: "middle"}} size="large"
-          icon={<AccountAvatar src={props.account.avatar} style={{verticalAlign: "middle"}} size={40} />}
+        <Avatar src={avatarUrl} style={{verticalAlign: "middle"}} size="large"
+          icon={<AccountAvatar src={avatarUrl} style={{verticalAlign: "middle"}} size={40} />}
         >
           {Setting.getShortName(props.account.name)}
         </Avatar>
@@ -447,10 +448,10 @@ function ManagementPage(props) {
     if (props.account === null) {
       const lastLoginOrg = localStorage.getItem("lastLoginOrg");
       sessionStorage.setItem("from", window.location.pathname);
-      if (lastLoginOrg) {
+      if (lastLoginOrg && lastLoginOrg !== "built-in") {
         return <Redirect to={`/login/${lastLoginOrg}`} />;
       } else {
-        return <Redirect to="/login" />;
+        return <Redirect to={`/login/${Conf.DefaultOrganization}`} />;
       }
     } else if (props.account === undefined) {
       return null;

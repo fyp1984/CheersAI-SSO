@@ -14,13 +14,14 @@
 
 import * as Cookie from "cookie";
 
-export const DefaultApplication = "app-built-in";
+export const DefaultOrganization = "CheersAI";
+export const DefaultApplication = "CheersAI-Desktop";
 
 export let ShowGithubCorner = false;
 export let IsDemoMode = false;
 
 export let ForceLanguage = "";
-export let DefaultLanguage = "en";
+export let DefaultLanguage = "zh";
 
 export let StaticBaseUrl = "https://cdn.casbin.org";
 

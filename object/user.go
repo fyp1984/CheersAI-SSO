@@ -982,12 +982,15 @@ func AddUser(user *User, lang string) (bool, error) {
 	}
 
 	if user.Owner != "built-in" {
-		applicationCount, err := GetOrganizationApplicationCount(organization.Owner, organization.Name, "", "")
+		application, err := GetApplicationByOrganizationName(organization.Name)
 		if err != nil {
 			return false, err
 		}
-		if applicationCount == 0 {
-			return false, fmt.Errorf(i18n.Translate(lang, "general:The organization: %s should have one application at least"), organization.Owner)
+		if application == nil {
+			return false, fmt.Errorf(i18n.Translate(lang, "general:The organization: %s should have one application at least"), organization.Name)
+		}
+		if user.SignupApplication == "" {
+			user.SignupApplication = application.Name
 		}
 	}
 
@@ -999,7 +1002,7 @@ func AddUser(user *User, lang string) (bool, error) {
 		if organization.BalanceCurrency != "" {
 			user.BalanceCurrency = organization.BalanceCurrency
 		} else {
-			user.BalanceCurrency = "USD"
+			user.BalanceCurrency = "CNY"
 		}
 	}
 

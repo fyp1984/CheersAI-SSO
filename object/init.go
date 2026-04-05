@@ -18,22 +18,35 @@ import (
 	"encoding/gob"
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/casdoor/casdoor/conf"
 	"github.com/casdoor/casdoor/util"
 	"github.com/go-webauthn/webauthn/webauthn"
 )
 
+const (
+	cheersAIDefaultOrganization = "CheersAI"
+	cheersAIDefaultApplication  = "CheersAI-Desktop"
+	cheersAILogoPath            = "/logo.png"
+	cheersAIDefaultAffiliation  = "CheersAI Inc."
+	cheersAIDefaultCurrency     = "CNY"
+)
+
+var cheersAIUserNavItems = []string{"/home-top", "/", "/shortcuts", "/apps"}
+
 func InitDb() {
 	existed := initBuiltInOrganization()
 	if !existed {
 		initBuiltInPermission()
-		initBuiltInProvider()
 		initBuiltInUser()
-		initBuiltInApplication()
 		initBuiltInCert()
 		initBuiltInLdap()
 	}
+
+	initBuiltInProvider()
+	initBuiltInApplication()
+	ensureCheersAIDefaults()
 
 	existed = initBuiltInApiModel()
 	if !existed {
@@ -133,12 +146,13 @@ func initBuiltInOrganization() bool {
 		PasswordType:       "bcrypt",
 		PasswordOptions:    []string{"AtLeast6"},
 		CountryCodes:       []string{"US", "ES", "FR", "DE", "GB", "CN", "JP", "KR", "VN", "ID", "SG", "IN"},
-		DefaultAvatar:      fmt.Sprintf("%s/img/casbin.svg", conf.GetConfigString("staticBaseUrl")),
+		DefaultAvatar:      cheersAILogoPath,
 		UserTypes:          []string{},
 		Tags:               []string{},
 		Languages:          []string{"en", "es", "fr", "de", "ja", "zh", "vi", "pt", "tr", "pl", "uk"},
 		InitScore:          2000,
 		AccountItems:       getBuiltInAccountItems(),
+		BalanceCurrency:    cheersAIDefaultCurrency,
 		EnableSoftDeletion: false,
 		IsProfilePublic:    false,
 		UseEmailAsUsername: false,
@@ -170,12 +184,12 @@ func initBuiltInUser() {
 		Type:              "normal-user",
 		Password:          "123",
 		DisplayName:       "Admin",
-		Avatar:            fmt.Sprintf("%s/img/casbin.svg", conf.GetConfigString("staticBaseUrl")),
+		Avatar:            cheersAILogoPath,
 		Email:             "admin@example.com",
 		Phone:             "12345678910",
 		CountryCode:       "US",
 		Address:           []string{},
-		Affiliation:       "Example Inc.",
+		Affiliation:       cheersAIDefaultAffiliation,
 		Tag:               "staff",
 		Score:             2000,
 		Ranking:           1,
@@ -201,6 +215,12 @@ func initBuiltInApplication() {
 	}
 
 	if application != nil {
+		if ensureRequiredApplicationProviders(application) {
+			_, err = UpdateApplication(util.GetId("admin", "app-built-in"), application, true, "en")
+			if err != nil {
+				panic(err)
+			}
+		}
 		return
 	}
 
@@ -222,6 +242,7 @@ func initBuiltInApplication() {
 		EnableSignUp:   true,
 		Providers: []*ProviderItem{
 			{Name: "provider_captcha_default", CanSignUp: false, CanSignIn: false, CanUnlink: false, Prompted: false, SignupGroup: "", Rule: "None", Provider: nil},
+			{Name: "provider_storage_local_file_system", CanSignUp: false, CanSignIn: false, CanUnlink: false, Prompted: false, SignupGroup: "", Rule: "None", Provider: nil},
 		},
 		SigninMethods: []*SigninMethod{
 			{Name: "Password", DisplayName: "Password", Rule: "All"},
@@ -326,6 +347,219 @@ func initBuiltInLdap() {
 	}
 }
 
+func ensureRequiredApplicationProviders(application *Application) bool {
+	if application == nil {
+		return false
+	}
+
+	requiredProviders := []string{
+		"provider_captcha_default",
+		"provider_storage_local_file_system",
+	}
+	modified := false
+	existedProviders := map[string]bool{}
+
+	for _, providerItem := range application.Providers {
+		existedProviders[providerItem.Name] = true
+	}
+
+	for _, providerName := range requiredProviders {
+		if existedProviders[providerName] {
+			continue
+		}
+
+		application.Providers = append(application.Providers, &ProviderItem{
+			Name:        providerName,
+			CanSignUp:   false,
+			CanSignIn:   false,
+			CanUnlink:   false,
+			Prompted:    false,
+			SignupGroup: "",
+			Rule:        "None",
+			Provider:    nil,
+		})
+		modified = true
+	}
+
+	return modified
+}
+
+func ensureCheersAIDefaults() {
+	oldDefaultAvatar := fmt.Sprintf("%s/img/casbin.svg", conf.GetConfigString("staticBaseUrl"))
+
+	_, _ = ormer.Engine.Where("default_avatar = ?", oldDefaultAvatar).Cols("default_avatar").Update(&Organization{DefaultAvatar: cheersAILogoPath})
+	_, _ = ormer.Engine.Where("avatar = ?", oldDefaultAvatar).Cols("avatar").Update(&User{Avatar: cheersAILogoPath})
+	_, _ = ormer.Engine.Exec("update user set avatar = replace(avatar, 'https:/files/', '/files/') where avatar like 'https:/files/%'")
+	_, _ = ormer.Engine.Exec("update user set avatar = replace(avatar, 'http:/files/', '/files/') where avatar like 'http:/files/%'")
+	_, _ = ormer.Engine.Exec("update user set permanent_avatar = replace(permanent_avatar, 'https:/files/', '/files/') where permanent_avatar like 'https:/files/%'")
+	_, _ = ormer.Engine.Exec("update user set permanent_avatar = replace(permanent_avatar, 'http:/files/', '/files/') where permanent_avatar like 'http:/files/%'")
+
+	organization, err := getOrganization("admin", cheersAIDefaultOrganization)
+	if err == nil && organization != nil {
+		modified := false
+		if application, appErr := getApplication("admin", cheersAIDefaultApplication); appErr == nil && application != nil {
+			if ensureRequiredApplicationProviders(application) {
+				_, _ = UpdateApplication(util.GetId("admin", cheersAIDefaultApplication), application, true, "en")
+			}
+		}
+		if organization.DefaultAvatar == "" || organization.DefaultAvatar == oldDefaultAvatar {
+			organization.DefaultAvatar = cheersAILogoPath
+			modified = true
+		}
+		if organization.DefaultApplication == "" {
+			if application, appErr := getApplication("admin", cheersAIDefaultApplication); appErr == nil && application != nil {
+				organization.DefaultApplication = cheersAIDefaultApplication
+				modified = true
+			}
+		}
+		if organization.BalanceCurrency == "" || organization.BalanceCurrency == "USD" {
+			organization.BalanceCurrency = cheersAIDefaultCurrency
+			modified = true
+		}
+		if !slices.Equal(organization.UserNavItems, cheersAIUserNavItems) {
+			organization.UserNavItems = append([]string{}, cheersAIUserNavItems...)
+			modified = true
+		}
+		if modified {
+			_, _ = UpdateOrganization(util.GetId("admin", cheersAIDefaultOrganization), organization, true)
+		}
+	}
+
+	builtInOrganization, err := getOrganization("admin", "built-in")
+	if err == nil && builtInOrganization != nil {
+		modified := false
+		if builtInOrganization.DefaultAvatar == "" || builtInOrganization.DefaultAvatar == oldDefaultAvatar {
+			builtInOrganization.DefaultAvatar = cheersAILogoPath
+			modified = true
+		}
+		if builtInOrganization.BalanceCurrency == "" || builtInOrganization.BalanceCurrency == "USD" {
+			builtInOrganization.BalanceCurrency = cheersAIDefaultCurrency
+			modified = true
+		}
+		if modified {
+			_, _ = UpdateOrganization(util.GetId("admin", "built-in"), builtInOrganization, true)
+		}
+	}
+
+	ensureUserDefaults("built-in", "admin", "app-built-in")
+	ensureUserDefaults(cheersAIDefaultOrganization, "CheersAl_Admin", cheersAIDefaultApplication)
+	ensureUserDefaults(cheersAIDefaultOrganization, "user_01", cheersAIDefaultApplication)
+	ensureUserDefaults(cheersAIDefaultOrganization, "user_02", cheersAIDefaultApplication)
+	ensureUserAdmin(cheersAIDefaultOrganization, "user_01")
+	ensureApplicationPermission(cheersAIDefaultOrganization, "permission_CheersAl_admin", util.GetId(cheersAIDefaultOrganization, "CheersAl_Admin"), cheersAIDefaultApplication)
+	ensureApplicationPermission(cheersAIDefaultOrganization, "permission_CheersAl_edit", util.GetId(cheersAIDefaultOrganization, "user_01"), cheersAIDefaultApplication)
+	ensureApplicationPermission(cheersAIDefaultOrganization, "permission_CheersAl_member", util.GetId(cheersAIDefaultOrganization, "user_02"), cheersAIDefaultApplication)
+}
+
+func ensureUserDefaults(owner string, name string, signupApplication string) {
+	user, err := getUser(owner, name)
+	if err != nil || user == nil {
+		return
+	}
+
+	oldDefaultAvatar := fmt.Sprintf("%s/img/casbin.svg", conf.GetConfigString("staticBaseUrl"))
+	columns := []string{}
+
+	if user.Avatar == "" || user.Avatar == oldDefaultAvatar {
+		user.Avatar = cheersAILogoPath
+		columns = append(columns, "avatar")
+	}
+	if user.Affiliation == "" || user.Affiliation == "Example Inc." {
+		user.Affiliation = cheersAIDefaultAffiliation
+		columns = append(columns, "affiliation")
+	}
+	if signupApplication != "" && (user.SignupApplication == "" || user.SignupApplication == "app-built-in") {
+		user.SignupApplication = signupApplication
+		columns = append(columns, "signup_application")
+	}
+	if user.BalanceCurrency == "" || user.BalanceCurrency == "USD" {
+		user.BalanceCurrency = cheersAIDefaultCurrency
+		columns = append(columns, "balance_currency")
+	}
+
+	if len(columns) == 0 {
+		return
+	}
+
+	user.PermanentAvatar = "*"
+	_, _ = UpdateUser(user.GetId(), user, columns, true)
+}
+
+func ensureUserAdmin(owner string, name string) {
+	user, err := getUser(owner, name)
+	if err != nil || user == nil || user.IsAdmin {
+		return
+	}
+
+	user.IsAdmin = true
+	_, _ = UpdateUser(user.GetId(), user, []string{"is_admin"}, true)
+}
+
+func ensureApplicationPermission(owner string, name string, userId string, application string) {
+	permission, err := getPermission(owner, name)
+	if err != nil {
+		return
+	}
+
+	if permission == nil {
+		permission = &Permission{
+			Owner:        owner,
+			Name:         name,
+			DisplayName:  name,
+			Model:        "user-model-built-in",
+			ResourceType: "Application",
+			Resources:    []string{application},
+			Actions:      []string{"Read"},
+			Users:        []string{userId},
+			Roles:        []string{},
+			Groups:       []string{},
+			Effect:       "Allow",
+			IsEnabled:    true,
+			State:        "Approved",
+		}
+		_, _ = AddPermission(permission)
+		return
+	}
+
+	modified := false
+	if permission.Model == "" {
+		permission.Model = "user-model-built-in"
+		modified = true
+	}
+	if permission.ResourceType != "Application" {
+		permission.ResourceType = "Application"
+		modified = true
+	}
+	if !slices.Equal(permission.Resources, []string{application}) {
+		permission.Resources = []string{application}
+		modified = true
+	}
+	if !slices.Equal(permission.Actions, []string{"Read"}) {
+		permission.Actions = []string{"Read"}
+		modified = true
+	}
+	if !slices.Contains(permission.Users, userId) {
+		permission.Users = []string{userId}
+		modified = true
+	}
+	if permission.Effect != "Allow" {
+		permission.Effect = "Allow"
+		modified = true
+	}
+	if !permission.IsEnabled {
+		permission.IsEnabled = true
+		modified = true
+	}
+	if permission.State != "Approved" {
+		permission.State = "Approved"
+		modified = true
+	}
+
+	if modified {
+		_, _ = UpdatePermission(permission.GetId(), permission)
+	}
+}
+
 func initBuiltInProvider() {
 	providers := []*Provider{
 		{
@@ -351,6 +585,14 @@ func initBuiltInProvider() {
 			DisplayName: "Dummy Payment",
 			Category:    "Payment",
 			Type:        "Dummy",
+		},
+		{
+			Owner:       "admin",
+			Name:        "provider_storage_local_file_system",
+			CreatedTime: util.GetCurrentTime(),
+			DisplayName: "Local File System",
+			Category:    "Storage",
+			Type:        "Local File System",
 		},
 	}
 

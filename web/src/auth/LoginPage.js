@@ -69,6 +69,7 @@ class LoginPage extends React.Component {
       orgChoiceMode: new URLSearchParams(props.location?.search).get("orgChoiceMode") ?? null,
       userLang: null,
       loginLoading: false,
+      signupNotice: null,
       userCode: props.userCode ?? (props.match?.params?.userCode ?? null),
       userCodeStatus: "",
       prefilledUsername: urlParams.get("username") || urlParams.get("login_hint"),
@@ -1173,21 +1174,44 @@ class LoginPage extends React.Component {
   }
 
   renderFooter(application, signinItem) {
+    const signupNotice = "产品内测期，请关注CheersAI公众号，后台留言申请试用";
+    const handleSignupClick = () => {
+      if (application?.name === Conf.DefaultApplication) {
+        this.setState({signupNotice});
+        return false;
+      }
+    };
+    const builtInLoginLink = (
+      <div style={{textAlign: "left"}}>
+        <a href="/login/built-in/">
+          系统管理员登录
+        </a>
+      </div>
+    );
+
+    const signupContent = !application.enableSignUp ? null : (
+      signinItem.label ? Setting.renderSignupLink(application, signinItem.label, handleSignupClick) :
+        (
+          <React.Fragment>
+            {i18next.t("login:No account?")}&nbsp;
+            {
+              Setting.renderSignupLink(application, i18next.t("login:sign up now"), handleSignupClick)
+            }
+          </React.Fragment>
+        )
+    );
+
     return (
       <div>
-        {
-          !application.enableSignUp ? null : (
-            signinItem.label ? Setting.renderSignupLink(application, signinItem.label) :
-              (
-                <React.Fragment>
-                  {i18next.t("login:No account?")}&nbsp;
-                  {
-                    Setting.renderSignupLink(application, i18next.t("login:sign up now"))
-                  }
-                </React.Fragment>
-              )
-          )
-        }
+        <div style={{display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "12px", width: "100%"}}>
+          {builtInLoginLink}
+          <div>{signupContent}</div>
+        </div>
+        {this.state.signupNotice ? (
+          <div style={{marginTop: "8px", color: "#faad14", fontSize: "12px"}}>
+            {this.state.signupNotice}
+          </div>
+        ) : null}
       </div>
     );
   }

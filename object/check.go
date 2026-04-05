@@ -568,6 +568,14 @@ func CheckLoginPermission(userId string, application *Application) (bool, error)
 		return true, nil
 	}
 
+	user, err := GetUser(userId)
+	if err != nil {
+		return false, err
+	}
+	if user != nil && user.IsApplicationAdmin(application) {
+		return true, nil
+	}
+
 	permissions, err := GetPermissions(application.Organization)
 	if err != nil {
 		return false, err

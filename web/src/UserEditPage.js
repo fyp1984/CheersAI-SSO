@@ -851,7 +851,7 @@ class UserEditPage extends React.Component {
             {Setting.getLabel(i18next.t("organization:Balance currency"), i18next.t("organization:Balance currency - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.user.balanceCurrency || "USD"} onChange={(value => {
+            <Select virtual={false} style={{width: "100%"}} value={this.state.user.balanceCurrency || "CNY"} onChange={(value => {
               this.updateUserField("balanceCurrency", value);
             })}>
               {
@@ -1316,13 +1316,14 @@ class UserEditPage extends React.Component {
   }
 
   renderImage(imgUrl, title, set, tag, disabled) {
+    const normalizedImgUrl = Setting.normalizeUrl(imgUrl);
     return (
       <Col span={4} style={{textAlign: "center", margin: "auto", marginLeft: "20px"}} key={tag}>
         {
-          imgUrl ?
+          normalizedImgUrl ?
             <div style={{marginBottom: "10px"}}>
-              <a target="_blank" rel="noreferrer" href={imgUrl} style={{marginBottom: "10px"}}>
-                <AccountAvatar src={imgUrl} alt={imgUrl} height={150} />
+              <a target="_blank" rel="noreferrer" href={normalizedImgUrl} style={{marginBottom: "10px"}}>
+                <AccountAvatar src={normalizedImgUrl} alt={normalizedImgUrl} height={150} />
               </a>
             </div>
             :

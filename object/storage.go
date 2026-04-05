@@ -81,7 +81,7 @@ func GetTruncatedPath(provider *Provider, fullFilePath string, limit int) string
 }
 
 func GetUploadFileUrl(provider *Provider, fullFilePath string, hasTimestamp bool) (string, string) {
-	if provider.Domain != "" && !strings.HasPrefix(provider.Domain, "http://") && !strings.HasPrefix(provider.Domain, "https://") {
+	if provider.Type != ProviderTypeLocalFileSystem && provider.Domain != "" && !strings.HasPrefix(provider.Domain, "http://") && !strings.HasPrefix(provider.Domain, "https://") {
 		provider.Domain = fmt.Sprintf("https://%s", provider.Domain)
 	}
 
@@ -93,8 +93,12 @@ func GetUploadFileUrl(provider *Provider, fullFilePath string, hasTimestamp bool
 		// provider.Domain = "https://cdn.casbin.com/casdoor/"
 		host = util.GetUrlHost(provider.Domain)
 	} else {
-		// provider.Domain = "http://localhost:8000" or "https://door.casdoor.com"
-		host = util.UrlJoin(provider.Domain, "/files")
+		// provider.Domain = "http://localhost:8000", "https://door.casdoor.com" or "/"
+		if provider.Domain == "" || provider.Domain == "/" {
+			host = "/files"
+		} else {
+			host = util.UrlJoin(provider.Domain, "/files")
+		}
 	}
 	if provider.Type == ProviderTypeAzureBlob || provider.Type == ProviderTypeGoogleCloudStorage {
 		host = util.UrlJoin(host, provider.Bucket)

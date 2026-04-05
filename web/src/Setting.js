@@ -698,6 +698,26 @@ export function getFullServerUrl() {
   return fullServerUrl;
 }
 
+export function normalizeUrl(url) {
+  if (!url) {
+    return url;
+  }
+
+  if (url.startsWith("https:/files/") || url.startsWith("http:/files/")) {
+    return url.replace(/^https?:\/files\//, "/files/");
+  }
+
+  if (url.startsWith("https://files/") || url.startsWith("http://files/")) {
+    return url.replace(/^https?:\/\/files\//, "/files/");
+  }
+
+  if (url.startsWith("files/")) {
+    return `/${url}`;
+  }
+
+  return url;
+}
+
 export function isProviderVisible(providerItem) {
   if (providerItem.provider === undefined || providerItem.provider === null) {
     return false;
@@ -1507,17 +1527,23 @@ function renderLink(url, text, onClick) {
 
   if (url.startsWith("/")) {
     return (
-      <Link style={{float: "right"}} to={url} onClick={() => {
+      <Link style={{float: "right"}} to={url} onClick={(e) => {
         if (onClick !== null) {
-          onClick();
+          const result = onClick(e);
+          if (result === false) {
+            e.preventDefault();
+          }
         }
       }}>{text}</Link>
     );
   } else if (url.startsWith("http")) {
     return (
-      <a style={{float: "right"}} href={url} onClick={() => {
+      <a style={{float: "right"}} href={url} onClick={(e) => {
         if (onClick !== null) {
-          onClick();
+          const result = onClick(e);
+          if (result === false) {
+            e.preventDefault();
+          }
         }
       }}>{text}</a>
     );
@@ -1526,7 +1552,7 @@ function renderLink(url, text, onClick) {
   }
 }
 
-export function renderSignupLink(application, text) {
+export function renderSignupLink(application, text, onClick = null) {
   let url;
   if (application === null) {
     url = null;
@@ -1545,11 +1571,14 @@ export function renderSignupLink(application, text) {
     }
   }
 
-  const storeSigninUrl = () => {
+  const handleClick = (e) => {
     sessionStorage.setItem("signinUrl", window.location.pathname + window.location.search);
+    if (onClick) {
+      return onClick(e);
+    }
   };
 
-  return renderLink(url + window.location.search, text, storeSigninUrl);
+  return renderLink(url + window.location.search, text, handleClick);
 }
 
 export function renderForgetLink(application, text) {

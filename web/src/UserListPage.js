@@ -71,13 +71,13 @@ class UserListPage extends BaseListPage {
       password: "123",
       passwordSalt: "",
       displayName: `New User - ${randomName}`,
-      avatar: this.state.organization.defaultAvatar ?? `${Setting.StaticBaseUrl}/img/casbin.svg`,
+      avatar: this.state.organization.defaultAvatar ?? "/logo.png",
       email: `${randomName}@example.com`,
       phone: Setting.getRandomNumber(),
       countryCode: this.state.organization.countryCodes?.length > 0 ? this.state.organization.countryCodes[0] : "",
       address: [],
       groups: this.props.groupName ? [`${owner}/${this.props.groupName}`] : [],
-      affiliation: "Example Inc.",
+      affiliation: "CheersAI Inc.",
       tag: "staff",
       region: "",
       realName: "",
@@ -90,7 +90,7 @@ class UserListPage extends BaseListPage {
       signupApplication: this.state.organization.defaultApplication,
       registerType: "Add User",
       registerSource: `${this.props.account.owner}/${this.props.account.name}`,
-      balanceCurrency: this.state.organization.balanceCurrency || "USD",
+      balanceCurrency: this.state.organization.balanceCurrency || "CNY",
     };
   }
 

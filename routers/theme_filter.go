@@ -23,6 +23,8 @@ import (
 	"github.com/casdoor/casdoor/object"
 )
 
+const defaultThemeOrganization = "CheersAI"
+
 type OrganizationThemeCookie struct {
 	ThemeData   *object.ThemeData
 	LogoUrl     string
@@ -48,9 +50,12 @@ func getOrganizationThemeCookieFromUrlPath(ctx *context.Context, urlPath string)
 	var organization *object.Organization
 	var err error
 	if urlPath == "/login" || urlPath == "/signup" {
-		application, err = object.GetDefaultApplication(fmt.Sprintf("admin/built-in"))
+		application, err = object.GetDefaultApplication(fmt.Sprintf("admin/%s", defaultThemeOrganization))
 		if err != nil {
-			return nil, err
+			application, err = object.GetDefaultApplication("admin/built-in")
+			if err != nil {
+				return nil, err
+			}
 		}
 	} else if strings.HasSuffix(urlPath, "/oauth/authorize") {
 		clientId := ctx.Input.Query("client_id")

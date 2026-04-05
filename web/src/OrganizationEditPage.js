@@ -574,7 +574,7 @@ class OrganizationEditPage extends React.Component {
             {Setting.getLabel(i18next.t("organization:Balance currency"), i18next.t("organization:Balance currency - Tooltip"))} :
           </Col>
           <Col span={4} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.organization.balanceCurrency || "USD"} onChange={(value => {
+            <Select virtual={false} style={{width: "100%"}} value={this.state.organization.balanceCurrency || "CNY"} onChange={(value => {
               this.updateOrganizationField("balanceCurrency", value);
             })}>
               {
