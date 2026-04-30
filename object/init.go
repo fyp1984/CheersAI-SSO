@@ -523,7 +523,7 @@ func ensureApplicationPermission(owner string, name string, userId string, appli
 
 	modified := false
 	if permission.Model == "" {
-		permission.Model = "user-model-built-in"
+		permission.Model = "built-in/user-model-built-in"
 		modified = true
 	}
 	if permission.ResourceType != "Application" {
