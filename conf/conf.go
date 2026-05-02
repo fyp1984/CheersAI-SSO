@@ -97,8 +97,12 @@ func ReplaceDataSourceNameByDocker(dataSourceName string) string {
 }
 
 func GetLanguage(language string) string {
-	if language == "" || language == "*" {
-		return "en"
+	if language == "*" {
+		return ""
+	}
+
+	if language == "" {
+		return ""
 	}
 
 	if len(language) != 2 || language == "nu" {

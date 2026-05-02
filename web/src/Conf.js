@@ -14,8 +14,8 @@
 
 import * as Cookie from "cookie";
 
-export const DefaultOrganization = "CheersAI";
-export const DefaultApplication = "CheersAI-Desktop";
+export const DefaultOrganization = "built-in";
+export const DefaultApplication = "app-built-in";
 
 export let ShowGithubCorner = false;
 export let IsDemoMode = false;
@@ -55,7 +55,8 @@ export function setConfig(config) {
   if (config.forceLanguage !== undefined) {
     ForceLanguage = config.forceLanguage;
   }
-  if (config.defaultLanguage !== undefined) {
+  if (config.defaultLanguage !== undefined && config.defaultLanguage !== "") {
+    // 只有当后端返回的defaultLanguage不为空时才覆盖
     DefaultLanguage = config.defaultLanguage;
   }
   if (config.staticBaseUrl !== undefined) {

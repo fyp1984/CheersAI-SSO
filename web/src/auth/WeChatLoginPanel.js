@@ -21,16 +21,21 @@ import {QRCode} from "antd";
 class WeChatLoginPanel extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       qrCode: null,
-      status: "loading",
+      status: "expired",
       ticket: null,
     };
     this.pollingTimer = null;
   }
 
   UNSAFE_componentWillMount() {
-    this.fetchQrCode();
+    const {application} = this.props;
+    const wechatProviderItem = application?.providers?.find(p => p.provider?.type === "WeChat");
+    if (wechatProviderItem) {
+      this.fetchQrCode();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -38,7 +43,7 @@ class WeChatLoginPanel extends React.Component {
       this.fetchQrCode();
     }
     if (prevProps.loginMethod === "wechat" && this.props.loginMethod !== "wechat") {
-      this.setState({qrCode: null, loading: false, ticket: null});
+      this.setState({qrCode: null, status: "expired", ticket: null});
       this.clearPolling();
     }
   }
@@ -80,6 +85,14 @@ class WeChatLoginPanel extends React.Component {
   render() {
     const {loginWidth = 320} = this.props;
     const {status, qrCode} = this.state;
+
+    // 如果没有配置微信登录，不显示任何内容
+    const {application} = this.props;
+    const wechatProviderItem = application?.providers?.find(p => p.provider?.type === "WeChat");
+    if (!wechatProviderItem) {
+      return null;
+    }
+
     return (
       <div style={{width: loginWidth, margin: "0 auto", textAlign: "center", marginTop: 16}}>
         <div style={{marginTop: 2}}>

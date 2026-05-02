@@ -122,13 +122,16 @@ const Dashboard = (props) => {
         }
       }
       return (
-        <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-          <Spin size="large" tip={i18next.t("login:Loading")} style={{paddingTop: "10%"}} />
+        <div style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "200px"}}>
+          <Spin size="large" tip={i18next.t("login:Loading")} />
         </div>
       );
     }
 
-    const myChart = echarts.init(chartDom);
+    let myChart = echarts.getInstanceByDom(chartDom);
+    if (!myChart) {
+      myChart = echarts.init(chartDom);
+    }
     const currentDate = new Date();
     const dateArray = [];
     for (let i = 30; i >= 0; i--) {

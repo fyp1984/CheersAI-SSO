@@ -5,47 +5,47 @@ module.exports = {
   devServer: {
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/swagger": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/files": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/.well-known/openid-configuration": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/serviceValidate": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/proxyValidate": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/proxy": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/validate": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/p3/serviceValidate": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/cas/**/p3/proxyValidate": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
       "/scim": {
-        target: "http://localhost:8000",
+        target: "http://localhost:18000",
         changeOrigin: true,
       },
     },

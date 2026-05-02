@@ -1,6 +1,8 @@
 FROM --platform=$BUILDPLATFORM node:20.20.1 AS FRONT
 WORKDIR /web
 
+ENV YARN_REGISTRY=https://registry.npmmirror.com
+
 # Copy only dependency files first for better caching
 COPY ./web/package.json ./web/yarn.lock ./
 RUN yarn install --frozen-lockfile --network-timeout 1000000
@@ -11,6 +13,9 @@ RUN NODE_OPTIONS="--max-old-space-size=4096" yarn run build
 
 FROM --platform=$BUILDPLATFORM golang:1.24.13 AS BACK
 WORKDIR /go/src/casdoor
+
+ENV GOPROXY=https://goproxy.cn,direct
+ENV GO111MODULE=on
 
 # Copy only go.mod and go.sum first for dependency caching
 COPY go.mod go.sum ./
