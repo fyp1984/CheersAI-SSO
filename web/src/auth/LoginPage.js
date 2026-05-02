@@ -712,7 +712,11 @@ class LoginPage extends React.Component {
       ;
     } else if (signinItem.name === "Username") {
       if (this.state.loginMethod === "wechat") {
-        return (<WeChatLoginPanel application={application} loginMethod={this.state.loginMethod} />);
+        const hasWeChatProvider = application?.providers?.some(p => p.provider?.type === "WeChat");
+        if (hasWeChatProvider) {
+          return (<WeChatLoginPanel application={application} loginMethod={this.state.loginMethod} />);
+        }
+        return null;
       }
 
       if (this.state.loginMethod === "verificationCodePhone") {
@@ -1607,13 +1611,16 @@ class LoginPage extends React.Component {
     if (this.props.preview !== "auto" && !Setting.isPasswordEnabled(application) && !Setting.isCodeSigninEnabled(application) && !Setting.isWebAuthnEnabled(application) && !Setting.isLdapEnabled(application) && visibleOAuthProviderItems.length === 1) {
       Setting.goToLink(Provider.getAuthUrl(application, visibleOAuthProviderItems[0].provider, "signup"));
       return (
-        <div style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%"}}>
-          <Spin size="large" tip={i18next.t("login:Signing in...")} />
+        <div style={{display: "flex", justifyContent: "center", alignItems: "center", width: "100%", minHeight: "200px"}}>
+          <Spin size="large">
+            <div>{i18next.t("login:Signing in...")}</div>
+          </Spin>
         </div>
       );
     }
 
     const wechatSigninMethods = application.signinMethods?.filter(method => method.name === "WeChat" && method.rule === "Login page");
+    const hasWeChatProvider = application?.providers?.some(p => p.provider?.type === "WeChat");
 
     return (
       <React.Fragment>
@@ -1633,7 +1640,7 @@ class LoginPage extends React.Component {
               </div>
             </div>
             {
-              wechatSigninMethods?.length > 0 ? (<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+              wechatSigninMethods?.length > 0 && hasWeChatProvider ? (<div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
                 <div>
                   <h3 style={{textAlign: "center", width: 320}}>{i18next.t("provider:Please use WeChat to scan the QR code and follow the official account for sign in")}</h3>
                   <WeChatLoginPanel application={application} loginMethod={this.state.loginMethod} />

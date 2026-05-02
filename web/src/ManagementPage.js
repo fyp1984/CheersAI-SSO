@@ -123,7 +123,7 @@ function ManagementPage(props) {
     AuthBackend.logout()
       .then((res) => {
         if (res.status === "ok") {
-          const owner = props.account.owner;
+          const owner = props.account?.owner || "built-in";
           props.setLogoutState();
           clearWeb3AuthToken();
           Setting.showMessage("success", i18next.t("application:Logged out successfully"));
@@ -240,10 +240,10 @@ function ManagementPage(props) {
     ];
 
     if (widgetItemsIsAll()) {
-      return widgets.map(item => item.label);
+      return widgets.map(item => React.cloneElement(item.label, {key: item.key}));
     }
 
-    return widgets.filter(item => widgetItems.includes(item.key)).map(item => item.label);
+    return widgets.filter(item => widgetItems.includes(item.key)).map(item => React.cloneElement(item.label, {key: item.key}));
   }
 
   function renderAccountMenu() {
@@ -353,9 +353,9 @@ function ManagementPage(props) {
 
     res.push(Setting.getItem(<Link style={{color: textColor}} to="/sites">{i18next.t("general:Gateway")}</Link>, "/gateway", <CheckCircleTwoTone twoToneColor={twoToneColor} />, [
       Setting.getItem(<Link to="/servers">{i18next.t("general:MCP Servers")}</Link>, "/servers"),
-      Setting.getItem(<Link to="/sites">{i18next.t("general:Sites")}</Link>, "/sites"),
-      Setting.getItem(<Link to="/certs">{i18next.t("general:Certs")}</Link>, "/certs"),
-      Setting.getItem(<Link to="/rules">{i18next.t("general:Rules")}</Link>, "/rules"),
+      Setting.getItem(<Link to="/sites">{i18next.t("general:Sites")}</Link>, "/gateway-sites"),
+      Setting.getItem(<Link to="/certs">{i18next.t("general:Certs")}</Link>, "/gateway-certs"),
+      Setting.getItem(<Link to="/rules">{i18next.t("general:Rules")}</Link>, "/gateway-rules"),
     ]));
 
     res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [

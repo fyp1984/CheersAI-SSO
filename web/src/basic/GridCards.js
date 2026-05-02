@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import {Card, Row, Spin} from "antd";
-import i18next from "i18next";
 import React from "react";
 import * as Setting from "../Setting";
 import SingleCard from "./SingleCard";
@@ -23,8 +22,8 @@ const GridCards = (props) => {
 
   if (items === null || items === undefined) {
     return (
-      <div style={{display: "flex", justifyContent: "center", alignItems: "center", marginTop: "10%"}}>
-        <Spin size="large" tip={i18next.t("login:Loading")} style={{paddingTop: "10%"}} />
+      <div style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "200px"}}>
+        <Spin size="large" />
       </div>
     );
   }

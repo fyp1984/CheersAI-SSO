@@ -17,7 +17,6 @@ services:
       frontendBaseDir: "./web/build"
     volumes:
       - ./conf:/conf/
-      - ./web/build:/web/build
       - ./files:/files
   db:
     restart: always

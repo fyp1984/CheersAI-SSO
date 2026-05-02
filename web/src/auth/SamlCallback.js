@@ -18,7 +18,6 @@ import {withRouter} from "react-router-dom";
 import * as AuthBackend from "./AuthBackend";
 import * as Util from "./Util";
 import * as Setting from "../Setting";
-import i18next from "i18next";
 import {authConfig} from "./Auth";
 import {renderLoginPanel} from "../Setting";
 
@@ -117,10 +116,10 @@ class SamlCallback extends React.Component {
     }
 
     return (
-      <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
+      <div style={{display: "flex", justifyContent: "center", alignItems: "center", minHeight: "200px"}}>
         {
           (this.state.msg === null) ? (
-            <Spin size="large" tip={i18next.t("login:Signing in...")} style={{paddingTop: "10%"}} />
+            <Spin size="large" />
           ) : (
             Util.renderMessageLarge(this, this.state.msg)
           )

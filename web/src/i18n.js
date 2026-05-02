@@ -67,16 +67,13 @@ function normalizeLanguage(language) {
 function initLanguage() {
   let language = localStorage.getItem("language");
   if (language === undefined || language === null || language === "") {
-    if (Conf.ForceLanguage !== "") {
-      language = normalizeLanguage(Conf.ForceLanguage);
-    } else {
-      language = normalizeLanguage(navigator.language);
-    }
+    // 强制使用中文作为默认语言
+    language = "zh";
   }
 
   language = normalizeLanguage(language);
   if (!supportedLanguages.has(language)) {
-    return Conf.DefaultLanguage;
+    return "zh"; // 默认返回中文
   }
 
   return language;
