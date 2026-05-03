@@ -239,11 +239,15 @@ function ManagementPage(props) {
       Setting.getItem(<OpenTour />, "tour"),
     ];
 
+    const renderableWidgets = widgets.filter(item => React.isValidElement(item.label));
+
     if (widgetItemsIsAll()) {
-      return widgets.map(item => React.cloneElement(item.label, {key: item.key}));
+      return renderableWidgets.map(item => React.cloneElement(item.label, {key: item.key}));
     }
 
-    return widgets.filter(item => widgetItems.includes(item.key)).map(item => React.cloneElement(item.label, {key: item.key}));
+    return renderableWidgets
+      .filter(item => widgetItems.includes(item.key))
+      .map(item => React.cloneElement(item.label, {key: item.key}));
   }
 
   function renderAccountMenu() {
