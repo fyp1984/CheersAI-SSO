@@ -105,16 +105,21 @@ class EntryPage extends React.Component {
     }
 
     const isDarkMode = this.props.themeAlgorithm.includes("dark");
+    const isLoading = this.state.application === undefined && this.state.pricing === undefined;
 
     return (
       <React.Fragment>
         <CustomHead headerHtml={this.state.application?.headerHtml} />
         <div className={`${isDarkMode ? "loginBackgroundDark" : "loginBackground"}`}
           style={{backgroundImage: Setting.inIframe() ? null : (Setting.isMobile() ? `url(${this.state.application?.formBackgroundUrlMobile})` : `url(${this.state.application?.formBackgroundUrl})`)}}>
-          <Spin size="large" spinning={this.state.application === undefined && this.state.pricing === undefined}
-            style={{width: "100%", margin: "0 auto", position: "absolute"}}>
-            <div>{i18next.t("login:Loading")}</div>
-          </Spin>
+          {isLoading ? (
+            <Spin
+              size="large"
+              spinning
+              tip={i18next.t("login:Loading")}
+              style={{width: "100%", margin: "0 auto", position: "absolute"}}
+            />
+          ) : null}
           <Switch>
             <Route exact path="/signup" render={(props) => this.renderHomeIfLoggedIn(<SignupPage {...this.props} application={this.state.application} applicationName={authConfig.appName} onUpdateApplication={onUpdateApplication} {...props} />)} />
             <Route exact path="/signup/:applicationName" render={(props) => this.renderHomeIfLoggedIn(<SignupPage {...this.props} application={this.state.application} onUpdateApplication={onUpdateApplication} {...props} />)} />
