@@ -1178,32 +1178,33 @@ class LoginPage extends React.Component {
   }
 
   renderFooter(application, signinItem) {
-    const signupNotice = "产品内测期，请关注CheersAI公众号，后台留言申请试用";
-    const handleSignupClick = () => {
-      if (application?.name === Conf.DefaultApplication) {
-        this.setState({signupNotice});
-        return false;
-      }
-    };
+    const currentSearch = this.props.location?.search || "";
+    const builtInLoginHref = `/login/built-in/${currentSearch}`;
     const builtInLoginLink = (
       <div style={{textAlign: "left"}}>
-        <a href="/login/built-in/">
+        <a href={builtInLoginHref}>
           系统管理员登录
         </a>
       </div>
     );
 
-    const signupContent = !application.enableSignUp ? null : (
-      signinItem.label ? Setting.renderSignupLink(application, signinItem.label, handleSignupClick) :
-        (
-          <React.Fragment>
-            {i18next.t("login:No account?")}&nbsp;
-            {
-              Setting.renderSignupLink(application, i18next.t("login:sign up now"), handleSignupClick)
-            }
-          </React.Fragment>
-        )
-    );
+    const isCheersAIDefaultLogin = application?.name === Conf.DefaultApplication;
+    const signupContent = isCheersAIDefaultLogin
+      ? (
+        <a href="https://www.cheersai.cloud" target="_blank" rel="noreferrer">
+          如需帮助，请联系产品客服
+        </a>
+      )
+      : (!application.enableSignUp ? null : (
+        signinItem.label
+          ? Setting.renderSignupLink(application, signinItem.label)
+          : (
+            <React.Fragment>
+              {i18next.t("login:No account?")}&nbsp;
+              {Setting.renderSignupLink(application, i18next.t("login:sign up now"))}
+            </React.Fragment>
+          )
+      ));
 
     return (
       <div>
@@ -1211,11 +1212,6 @@ class LoginPage extends React.Component {
           {builtInLoginLink}
           <div>{signupContent}</div>
         </div>
-        {this.state.signupNotice ? (
-          <div style={{marginTop: "8px", color: "#faad14", fontSize: "12px"}}>
-            {this.state.signupNotice}
-          </div>
-        ) : null}
       </div>
     );
   }
