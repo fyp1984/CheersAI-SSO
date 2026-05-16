@@ -1179,6 +1179,7 @@ class LoginPage extends React.Component {
 
   renderFooter(application, signinItem) {
     const currentSearch = this.props.location?.search || "";
+    const currentPath = this.props.location?.pathname || window.location.pathname;
     const builtInLoginHref = `/login/built-in/${currentSearch}`;
     const builtInLoginLink = (
       <div style={{textAlign: "left"}}>
@@ -1189,7 +1190,8 @@ class LoginPage extends React.Component {
     );
 
     const isCheersAIDefaultLogin = application?.name === Conf.DefaultApplication;
-    const signupContent = isCheersAIDefaultLogin
+    const isOauthAuthorizeLogin = currentPath === "/login/oauth/authorize";
+    const signupContent = (isCheersAIDefaultLogin || isOauthAuthorizeLogin)
       ? (
         <a href="https://www.cheersai.cloud" target="_blank" rel="noreferrer">
           如需帮助，请联系产品客服
