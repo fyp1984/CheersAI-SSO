@@ -48,9 +48,21 @@ yarn-error.log*
 .env
 .env.local
 *.env
-conf/app.conf  # 如果你里面写了真实的数据库密码，建议忽略，并在同目录提供一个 app.conf.example
+# 应用配置含数据库连接凭据，使用 app.conf.template 作为模板
+conf/app.conf
 
 # 系统生成的缓存
 .DS_Store
 Thumbs.db
 .mysql_data/*
+
+# ========= 安全：本地密钥与过程文件 =========
+# JWT 签名私钥与证书（运行时自动生成或手动配置，禁止入库）
+object/token_jwt_key.key
+object/token_jwt_key.pem
+
+# 本地 AI Agent 配置（非工程文件）
+.trae/
+
+# 本地 Docker 环境信息（过程产物）
+docker_info.txt
